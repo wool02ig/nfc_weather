@@ -6,7 +6,7 @@
 .extraGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{background:#f5f8fd;border:1px solid #e1eaf5;border-radius:12px;padding:12px}.tile .metric{font-size:23px;margin:5px 0}.tile .small{line-height:1.5}.timeline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}.timeline .timeitem{min-width:0;padding:9px 2px;font-size:11px}.timeline .timeitem .w{font-size:23px;margin:5px 0}.timeline .timeitem .timevalue{font-weight:700;white-space:nowrap;font-size:12px}.timeline .timeitem .rainvalue{color:#236ca5;white-space:nowrap;font-size:10px}.timeitem{background:#f3f7fd;border:1px solid #e0eaf6;border-radius:12px;padding:10px 6px;text-align:center;font-size:12px}.timeitem .w{font-size:26px;display:block;margin:5px}.statusline{font-size:13px;line-height:1.7;color:#53677d;margin-top:8px}.linkrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.linkrow a{background:#edf5ff;border:1px solid #c9ddf3;border-radius:9px;padding:9px 11px;text-decoration:none;font-size:13px;font-weight:700}.comparetable{width:100%;border-collapse:collapse;font-size:13px}.comparetable td,.comparetable th{padding:10px 5px;border-bottom:1px solid #e4ebf4;text-align:left}.muted{font-size:12px;color:#62758b;line-height:1.6}@media(max-width:375px){.timeline{gap:3px}.timeline .timeitem{padding:8px 1px;font-size:10px}.timeline .timeitem .w{font-size:20px}.timeline .timeitem .timevalue{font-size:11px}.timeline .timeitem .rainvalue{font-size:9px}}
 
 /* v2.0 beta 2: left temperature refresh, right stacked controls */
-.hero-layout{display:grid;grid-template-columns:minmax(0,1fr) 154px;gap:12px;align-items:center;margin-top:17px}
+.hero-layout{display:grid;grid-template-columns:minmax(0,1fr) 142px;gap:10px;align-items:center;margin-top:17px}
 .hero-layout .current{margin:0;min-width:0;gap:9px;align-items:center}
 .hero-layout .emoji{font-size:46px;flex:none}
 .hero-layout .temperature-line{display:flex;align-items:center;gap:5px;white-space:nowrap}
@@ -15,13 +15,13 @@
 .hero-layout .refresh-icon:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .hero-layout .condition{margin-top:6px}
 .hero-layout .location{line-height:1.4;overflow-wrap:anywhere}
-.hero-layout .controls{margin:0;display:flex;flex-direction:column;gap:7px;min-width:0}
-.hero-layout .controls #gps,.hero-layout .controls #city,.hero-layout .controls #model{width:100%;min-width:0;min-height:36px;padding:8px 7px;font-size:12px}
-.hero-layout .controls #model{min-height:32px;background:#dbe4f0;color:#4e6178;border:1px solid #a8b8cc;font-weight:500;font-size:11px}
+.hero-layout .controls{margin:0;display:flex;flex-direction:column;gap:5px;min-width:0}
+.hero-layout .controls #gps,.hero-layout .controls #city,.hero-layout .controls #model{width:100%;min-width:0;min-height:33px;padding:6px 5px;font-size:11px}
+.hero-layout .controls #model{min-height:31px;background:#dbe4f0;color:#4e6178;border:1px solid #a8b8cc;font-weight:500;font-size:11px}
 .hero-layout .controls .model-label{font-size:10px;opacity:.8;line-height:1.1;margin-top:2px}
 .hero-layout .controls #modelHint{font-size:10px;opacity:.8;line-height:1.3}
-@media(min-width:520px){.hero-layout{grid-template-columns:minmax(0,1fr) 190px;gap:16px}.hero-layout .emoji{font-size:58px}.hero-layout .controls #gps,.hero-layout .controls #city{font-size:13px}}
-@media(max-width:365px){.top{padding:19px 15px}.hero-layout{grid-template-columns:minmax(0,1fr) 128px;gap:7px}.hero-layout .emoji{font-size:35px}.hero-layout .temp{font-size:34px}.hero-layout .current{gap:6px}.hero-layout .refresh-icon{width:27px;height:27px;min-width:27px;min-height:27px}.hero-layout .controls #gps,.hero-layout .controls #city{font-size:11px;min-height:34px}.hero-layout .condition,.hero-layout .location{font-size:12px}}
+@media(min-width:520px){.hero-layout{grid-template-columns:minmax(0,1fr) 165px;gap:14px}.hero-layout .emoji{font-size:58px}.hero-layout .controls #gps,.hero-layout .controls #city{font-size:12px}}
+@media(max-width:365px){.top{padding:19px 15px}.hero-layout{grid-template-columns:minmax(0,1fr) 120px;gap:7px}.hero-layout .emoji{font-size:35px}.hero-layout .temp{font-size:34px}.hero-layout .current{gap:6px}.hero-layout .refresh-icon{width:27px;height:27px;min-width:27px;min-height:27px}.hero-layout .controls #gps,.hero-layout .controls #city{font-size:10px;min-height:33px}.hero-layout .condition,.hero-layout .location{font-size:12px}}
 
 /* v2.0 beta 4: muted red location button, white text */
 .hero-layout .controls #gps{
