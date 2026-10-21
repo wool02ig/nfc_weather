@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#132d4d"><title>NFC_天気チェック</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#132d4d"><title>NFC お出かけ天気チェック</title>
 <link rel="icon" type="image/png" href="./favicon.png?v=1">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=1">
 <style>
@@ -83,13 +83,20 @@
 @keyframes skyWave{0%{transform:translateX(-8%) rotate(-5deg)}100%{transform:translateX(9%) rotate(2deg)}}
 @keyframes skyWaveBack{0%{transform:translateX(8%) rotate(8deg)}100%{transform:translateX(-7%) rotate(-3deg)}}
 @media(prefers-reduced-motion:reduce){.top,.top::before,.top::after,.hero-layout #nowIcon{animation:none!important}.hero-layout #nowIcon{will-change:auto}}
+
+/* v2.5: refined text positioning */
+#rainStart{margin:0 0 9px;line-height:1.35}
+#rainStartDetail{line-height:1.5}
+#goAdvice.notice{margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:#203c5b;line-height:1.65}
+.section + .card > .notice:first-child:not(#goAdvice){margin-top:0;display:flex;align-items:center;min-height:43px}
+#hourlyRows.hourly{margin-top:0}
 </style></head>
 <body><main><header class="top"><div class="eyebrow">NFC WEATHER DASHBOARD</div><h1>お出かけ天気チェック</h1><div class="hero-layout"><div class="current"><div class="emoji" id="nowIcon">🌤️</div><div><div class="temperature-line"><div class="temp" id="nowTemp">--°</div><button id="refresh" class="refresh-icon" type="button" title="天気を更新" aria-label="天気を更新">↻</button></div><div class="weather-place-line"><div class="condition" id="nowCond">天気情報を取得中</div><div class="location" id="where">📍 つくば</div></div><div id="refreshFeedback" class="refresh-feedback" role="status" aria-live="polite"></div></div></div><div class="controls"><button id="gps">📍 現在地で更新</button><select id="city" aria-label="地域を選ぶ"><option value="">地域を選択</option><option value="43.0618,141.3545,札幌">札幌</option><option value="36.3966,138.4255,小諸">小諸</option><option value="36.3659,140.4713,水戸">水戸</option><option value="36.0835,140.0764,つくば" selected>つくば</option><option value="35.6812,139.7671,東京">東京</option><option value="35.6547,139.7959,豊洲">豊洲</option><option value="35.1815,136.9066,名古屋">名古屋</option><option value="34.6937,135.5023,大阪">大阪</option><option value="33.5902,130.4017,福岡">福岡</option></select><select id="model" aria-label="天気予報モデル"><option value="best_match">自動選択</option><option value="jma_seamless">気象庁（日本）</option><option value="ecmwf_ifs025">欧州（ECMWF）</option><option value="ncep_gfs_seamless">米国（GFS）</option></select></div></div></header>
 <div class="section">☀️ 今日の天気</div><section class="card"><div class="twocol"><div><div class="small">最高 / 最低気温</div><div class="metric" id="todayTemp">-- / --°</div><div class="small" id="todayCond">--</div></div><div><div class="small">降水確率（日最大）</div><div class="metric" id="todayRain">--%</div><div class="small">時間帯別ではありません</div></div></div><div class="notice" id="umbrella">☂️ 傘の目安を確認中</div></section>
-<div class="section">🕒 この先6時間の天気</div><section class="card"><div class="timeline" id="timeline"><div class="small">時間別予報を取得しています…</div></div><div class="muted" style="margin-top:10px">左から右へ1時間ごとの天気・気温・降水確率を表示。未来の予測です。</div></section>
+<div class="section">🕒 この先6時間の天気</div><section class="card"><div class="timeline" id="timeline"><div class="small">時間別予報を取得しています…</div></div></section>
 <div class="section">🌙 明日の天気</div><section class="card"><div class="weatherline"><span class="w" id="tomIcon">🌤️</span><div><strong id="tomCond">--</strong><div class="small" id="tomTemps">最高 --° / 最低 --°</div><div class="small" id="tomRain">降水確率 --%</div></div></div></section>
 <div class="section">🌧️ 雨の降り始め目安</div><section class="card"><div class="metric" id="rainStart" style="font-size:20px">取得中…</div><div class="small" id="rainStartDetail">時間別予報から推定します。雨雲レーダーではありません。</div></section>
-<div class="section">🕒 3時間ごとの降水確率</div><section class="card"><div class="small">各3時間帯の最大降水確率と予想降水量の合計（今日・明日）</div><div id="hourlyRows" class="hourly"></div></section>
+<div class="section">🕒 3時間ごとの降水確率</div><section class="card"><div id="hourlyRows" class="hourly"></div></section>
 <div class="section">🚶 お出かけ直前チェック</div><section class="card"><div class="notice" id="goAdvice">外出情報を取得しています…</div><div class="extraGrid" style="margin-top:12px"><div class="tile"><div class="small">🌡️ 体感温度</div><div class="metric" id="feelsLike">--°</div><div class="small" id="clothes">服装アドバイス取得中</div></div><div class="tile"><div class="small">💨 現在の風速・突風</div><div class="metric" id="windNow">--</div><div class="small" id="windNote">強風の目安を取得中</div></div><div class="tile"><div class="small">☀️ 本日のUV最大</div><div class="metric" id="uvIndex">--</div><div class="small" id="uvNote">紫外線指数</div></div><div class="tile"><div class="small">🌇 日の出 / 日の入り</div><div class="metric" id="sunTimes" style="font-size:17px">-- / --</div><div class="small">選択地点の現地時刻</div></div></div></section>
 
 <div class="section">🧺 お出かけ生活チェック</div>
@@ -98,7 +105,7 @@
 <div class="quick-item"><div class="quick-label">🥵 暑さ</div><div class="quick-result" id="heatLevel">判定中…</div><div class="quick-note" id="heatDetail">公式WBGTではありません</div></div>
 <div class="quick-item"><div class="quick-label">🌫️ PM2.5</div><div class="quick-result" id="pm25Grade">取得中…</div><div class="quick-note" id="pm25">--</div></div>
 <div class="quick-item"><div class="quick-label">🏜️ ダスト</div><div class="quick-result" id="dustGrade">取得中…</div><div class="quick-note" id="dust">--</div></div>
-</div><div class="muted quick-disclaimer">洗濯・暑さは簡易判定。PM2.5・ダストはモデル予測値（μg/m³）で、ダストは黄砂そのものの観測値ではありません。</div>
+</div>
 <details class="support-details"><summary>判定の補足と情報リンク</summary><div class="statusline" id="airStatus">空気質データを取得中…</div><div class="statusline">🌲 花粉：地点別の国内リアルタイム数値は取得していません。</div><div class="linkrow"><a href="https://www.wbgt.env.go.jp/" target="_blank" rel="noopener noreferrer">環境省 暑さ指数 ↗</a><a href="https://www.env.go.jp/air/osen/pm/" target="_blank" rel="noopener noreferrer">大気環境 ↗</a><a href="https://www.jma.go.jp/bosai/map.html#contents=yellow_sand" target="_blank" rel="noopener noreferrer">気象庁 黄砂 ↗</a></div></details></section>
 <div class="section">🌧️ 雨雲レーダー・気象警報</div><section class="card"><div class="notice">⚪ 警報・注意報の発表状況：未取得（公式サイトで確認）</div><div class="linkrow"><a id="radarLink" href="https://weather.yahoo.co.jp/weather/zoomradar/" target="_blank" rel="noopener noreferrer">Yahoo! 雨雲レーダー ↗</a><a href="https://weathernews.jp/onebox/radar/" target="_blank" rel="noopener noreferrer">ウェザーニュース レーダー ↗</a><a href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener noreferrer">気象庁 雨雲の動き ↗</a><a href="https://www.jma.go.jp/bosai/warning/" target="_blank" rel="noopener noreferrer">気象庁 警報・注意報 ↗</a></div><div class="muted" style="margin-top:10px">このページは警報・注意報の発表を自動判定しません。発表時も表示色は変わりません。公式サイトで確認してください。</div></section>
 <div class="section">📅 週間天気</div><section class="card weekly" id="weekly"><div class="small">予報を読み込み中…</div></section>
@@ -216,7 +223,7 @@ for(let i=begin;i<Math.min(h.time.length,begin+48);i++){
 if(onset===null){$('rainStart').textContent='今後48時間は明確な降水予測なし';$('rainStartDetail').textContent='降水量・降水確率の条件を満たす降り始め予測なし。急な変化には注意。';}
 else{$('rainStart').textContent=h.time[onset].slice(5,10).replace('-','/')+' '+h.time[onset].slice(11,16)+'ごろ';$('rainStartDetail').textContent='予想降水量 '+(h.precipitation?.[onset]??'--')+' mm/時、降水確率 '+pct(h.precipitation_probability?.[onset])+'%。1時間単位の予報上の目安です。';}
 const container=$('hourlyRows');container.replaceChildren();const today=h.time[0].slice(0,10);const tomorrow=data.daily.time[1];
-for(const date of [today,tomorrow]){const heading=document.createElement('div');heading.className='hourday';heading.textContent=(date===today?'今日':'明日')+'（'+date.slice(5,7)+'/'+date.slice(8,10)+'）';container.append(heading);for(let hour=0;hour<24;hour+=3){const vals=[];let mm=0,found=false;for(let j=0;j<h.time.length;j++){if(h.time[j].slice(0,10)===date){const hh=Number(h.time[j].slice(11,13));if(hh>=hour&&hh<hour+3){if(h.precipitation_probability?.[j]!=null)vals.push(h.precipitation_probability[j]);if(h.precipitation?.[j]!=null){mm+=h.precipitation[j];found=true;}}}}
+for(const date of [today,tomorrow]){const heading=document.createElement('div');heading.className='hourday';const weekday=['日','月','火','水','木','金','土'][new Date(date+'T12:00:00Z').getUTCDay()];heading.textContent=(date===today?'今日':'明日')+'（'+date.slice(5,7)+'/'+date.slice(8,10)+'('+weekday+')）';container.append(heading);for(let hour=0;hour<24;hour+=3){const vals=[];let mm=0,found=false;for(let j=0;j<h.time.length;j++){if(h.time[j].slice(0,10)===date){const hh=Number(h.time[j].slice(11,13));if(hh>=hour&&hh<hour+3){if(h.precipitation_probability?.[j]!=null)vals.push(h.precipitation_probability[j]);if(h.precipitation?.[j]!=null){mm+=h.precipitation[j];found=true;}}}}
 if(!vals.length&&!found)continue;const max=vals.length?Math.max(...vals):null;const row=document.createElement('div');row.className='hourrow';const tag=document.createElement('span');tag.className='hourdate';tag.textContent=String(hour).padStart(2,'0')+':00 – '+String(hour+3).padStart(2,'0')+':00';const bar=document.createElement('div');bar.className='bar';const fill=document.createElement('span');fill.style.width=(max===null?0:Math.min(max,100))+'%';bar.append(fill);const pctEl=document.createElement('span');pctEl.textContent=pct(max)+'%';pctEl.title=(found?'降水量合計 '+mm.toFixed(1)+'mm':'予想降水量データなし');row.append(tag,bar,pctEl);container.append(row);}}
 const day=data.daily;const prob=day.precipitation_probability_max?.[0];const rain=day.precipitation_sum?.[0];const sunH=(day.sunshine_duration?.[0]??0)/3600;const wind=day.wind_speed_10m_max?.[0];let grade='判断材料が不足しています',reason='';
 if(prob!=null&&rain!=null){if(prob>=60||rain>=3){grade='😟 外干しは控えめに';reason='日最大降水確率 '+pct(prob)+'%、予想降水量 '+rain+'mm。';}
@@ -264,6 +271,52 @@ async function loadAirQuality(lat,lon){const seq=++airSeq;for(const id of ['pm25
  }catch(e){if(seq!==airSeq)return;$('airStatus').textContent='この地点の空気質データは取得できませんでした。リンク先で確認してください。';for(const id of ['pm25Grade','dustGrade'])$(id).textContent='⚪ 不明';}}
 
 let gpsSeq=0;
-function geolocate(){const seq=++gpsSeq;if(!navigator.geolocation){refreshFeedback('⚠ 位置情報非対応');$('status').textContent='位置情報に対応していません。地域を選んでください。';return}refreshFeedback('📍 現在地を確認中…',true);$('status').textContent='現在地の利用許可を確認しています…';navigator.geolocation.getCurrentPosition(({coords})=>{if(seq!==gpsSeq)return;pos={lat:coords.latitude,lon:coords.longitude,name:'現在地'};$('city').value='';update()},err=>{if(seq!==gpsSeq)return;const msg=err.code===1?'位置情報が許可されていません':err.code===2?'現在地を取得できません':err.code===3?'現在地の取得がタイムアウト':'位置情報を利用できません';refreshFeedback('⚠ GPS取得失敗：'+msg);$('status').textContent=msg+'。現在表示中の地点（'+pos.name+'）の予報は引き続き利用できます。GPSを許可するか、地域を選んでください。';},{enableHighAccuracy:false,timeout:20000,maximumAge:600000})}
+function gpsRequest(options){
+ return new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,options));
+}
+function gpsFailureMessage(error){
+ const code=error?.code;
+ if(code===1)return '位置情報へのアクセスが拒否されました　ブラウザと端末の位置情報設定を確認してください';
+ if(code===2)return '現在地を特定できませんでした　Wi-Fiや端末の位置情報サービスを確認してください';
+ if(code===3)return '位置情報の取得がタイムアウトしました　電波状態やWi-Fi接続を確認してください';
+ return '位置情報の取得に失敗しました';
+}
+async function geolocate(){
+ const seq=++gpsSeq;
+ if(!window.isSecureContext){
+  refreshFeedback('⚠ HTTPSで開いてください');
+  $('status').textContent='位置情報はHTTPSのページで利用できます　GitHub Pagesのhttps://から開いてください';return;
+ }
+ if(!navigator.geolocation){
+  refreshFeedback('⚠ 位置情報非対応');
+  $('status').textContent='ブラウザが位置情報機能に対応していません　地点選択を利用してください';return;
+ }
+ refreshFeedback('📍 現在地を確認中…',true);
+ $('status').textContent='位置情報を取得しています…';
+ let lastError;
+ const attempts=[
+  {enableHighAccuracy:false,timeout:12000,maximumAge:300000},
+  {enableHighAccuracy:true,timeout:30000,maximumAge:0}
+ ];
+ for(let i=0;i<attempts.length;i++){
+  try{
+   if(i===1){refreshFeedback('📍 高精度モードで再試行中…',true);$('status').textContent='現在地を高精度モードで再取得しています…';}
+   const {coords}=await gpsRequest(attempts[i]);
+   if(seq!==gpsSeq)return;
+   if(!Number.isFinite(coords.latitude)||!Number.isFinite(coords.longitude))throw new Error('invalid coordinates');
+   pos={lat:coords.latitude,lon:coords.longitude,name:'現在地'};
+   $('city').value='';
+   update();return;
+  }catch(e){
+   if(seq!==gpsSeq)return;
+   lastError=e;
+   if(e?.code===1)break; // Permission denied: retry cannot override user/browser policy.
+  }
+ }
+ if(seq!==gpsSeq)return;
+ const msg=gpsFailureMessage(lastError);
+ refreshFeedback('⚠ GPS取得失敗　詳細は下部');
+ $('status').textContent=msg+'　現在表示中の地点（'+pos.name+'）の予報を維持しています　端末・ブラウザで位置情報を許可済みでも取得不可になる場合があります';
+}
 $('model').onchange=()=>{update()};$('gps').onclick=geolocate;$('refresh').onclick=update;$('city').onchange=e=>{if(!e.target.value)return;++gpsSeq;const [lat,lon,name]=e.target.value.split(',');pos={lat:Number(lat),lon:Number(lon),name};update()};update();
 </script></body></html>
