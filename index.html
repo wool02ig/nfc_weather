@@ -113,12 +113,17 @@
   .hero-layout .controls #model{max-width:113px;font-size:10px;padding-left:2px;padding-right:2px}
 }
 
-/* 48-hour horizontal hourly forecast */
-#timeline.timeline{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;padding-bottom:8px;touch-action:pan-x pan-y}
-#timeline.timeline .timeitem{flex:0 0 66px;min-width:66px;padding:10px 3px;scroll-snap-align:start}
-#timeline.timeline .timeitem .windvalue{font-size:10px;color:#47637c;white-space:nowrap;margin-top:5px;font-weight:600}
-#timeline.timeline .timeitem .daylabel{font-size:10px;color:#57738d;white-space:nowrap;min-height:14px;margin-bottom:3px}
-#timeline.timeline .timeitem.daybreak{border-left:2px solid #85add8}
+/* v2.9 beta2: light, continuous hourly timeline with vertical separators */
+#timeline.timeline{display:flex;gap:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;padding:2px 0 10px;touch-action:pan-x pan-y}
+#timeline.timeline .timeitem{flex:0 0 66px;min-width:66px;box-sizing:border-box;padding:8px 3px 7px;margin:0;border:0;border-right:1px solid #e3eaf2;border-radius:0;background:transparent;box-shadow:none;scroll-snap-align:start}
+#timeline.timeline .timeitem:last-child{border-right:0}
+#timeline.timeline .timeitem.daybreak{border-left:2px solid #8baed2;background:linear-gradient(to right,#f2f7fd 0%,transparent 85%)}
+#timeline.timeline .timeitem:first-child{border-left:0}
+#timeline.timeline .timeitem .w{margin:7px 0 6px;font-size:25px}
+#timeline.timeline .timeitem .timevalue{font-size:12px;font-weight:750}
+#timeline.timeline .timeitem .rainvalue{font-size:10px;color:#236ca5;margin-top:5px}
+#timeline.timeline .timeitem .windvalue{font-size:10px;color:#47637c;white-space:nowrap;margin-top:6px;font-weight:600}
+#timeline.timeline .timeitem .daylabel{font-size:10px;color:#41658c;white-space:nowrap;min-height:14px;margin-bottom:4px;font-weight:700}
 @media(max-width:375px){#timeline.timeline .timeitem{flex-basis:63px;min-width:63px}}
 </style></head>
 <body><main><header class="top"><div class="eyebrow">NFC WEATHER DASHBOARD</div><h1>お出かけ天気チェック</h1><div class="hero-layout"><div class="current"><div class="emoji" id="nowIcon">🌤️</div><div><div class="temperature-line"><div class="temp" id="nowTemp">--°</div><button id="refresh" class="refresh-icon" type="button" title="天気を更新" aria-label="天気を更新">↻</button></div><div class="weather-place-line"><div class="condition" id="nowCond">天気情報を取得中</div><div class="location" id="where">📍 つくば</div></div><div id="refreshFeedback" class="refresh-feedback" role="status" aria-live="polite"></div></div></div><div class="controls"><button id="gps">📍 現在地で更新</button><select id="city" aria-label="地域を選ぶ"><option value="">地域を選択</option><option value="43.0618,141.3545,札幌">札幌</option><option value="36.3966,138.4255,小諸">小諸</option><option value="36.3659,140.4713,水戸">水戸</option><option value="36.0835,140.0764,つくば" selected>つくば</option><option value="35.6812,139.7671,東京">東京</option><option value="35.6547,139.7959,豊洲">豊洲</option><option value="35.1815,136.9066,名古屋">名古屋</option><option value="34.6937,135.5023,大阪">大阪</option><option value="33.5902,130.4017,福岡">福岡</option></select><select id="model" aria-label="天気予報モデル"><option value="best_match">自動選択</option><option value="jma_seamless">気象庁（日本）</option><option value="ecmwf_ifs025">欧州（ECMWF）</option><option value="ncep_gfs_seamless">米国（GFS）</option></select></div></div></header>
@@ -295,8 +300,9 @@ function renderNewExtras(core){
     const dateObj=new Date(dateStr+'T12:00:00');
     const diffDays=Math.round((new Date(dateStr+'T12:00:00')-new Date(localNow.slice(0,10)+'T12:00:00'))/86400000);
     const dayLabel=document.createElement('div');dayLabel.className='daylabel';
-    dayLabel.textContent=(diffDays===0?'今日':diffDays===1?'明日':diffDays===2?'明後日':(dateObj.getMonth()+1)+'/'+dateObj.getDate());
-    if(j===i||dateStr!==h.time[j-1].slice(0,10))row.classList.add('daybreak');
+    const isDaybreak=(j===i||dateStr!==h.time[j-1].slice(0,10));
+    dayLabel.textContent=isDaybreak?(diffDays===0?'今日':diffDays===1?'明日':diffDays===2?'明後日':(dateObj.getMonth()+1)+'/'+dateObj.getDate()):'';
+    if(isDaybreak)row.classList.add('daybreak');
     const time=document.createElement('div');time.textContent=hour;
     const ico=document.createElement('span');ico.className='w';ico.textContent=l[1];
     const tempEl=document.createElement('div');tempEl.className='timevalue';tempEl.textContent=fmt(h.temperature_2m?.[j])+'℃';
