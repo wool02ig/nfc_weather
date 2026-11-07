@@ -125,6 +125,17 @@
 #timeline.timeline .timeitem .windvalue{font-size:10px;color:#47637c;white-space:nowrap;margin-top:6px;font-weight:600}
 #timeline.timeline .timeitem .daylabel{font-size:10px;color:#41658c;white-space:nowrap;min-height:14px;margin-bottom:4px;font-weight:700}
 @media(max-width:375px){#timeline.timeline .timeitem{flex-basis:63px;min-width:63px}}
+
+/* v2.9 mobile layout: keep precipitation and sunshine values together */
+@media(max-width:519px){
+  #laundryDetail .laundry-detail-part{display:block;white-space:nowrap}
+  #laundryDetail .laundry-detail-sep{display:none}
+}
+/* Equal-width official radar / warning links: two columns on every screen */
+.radar-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.radar-links a{display:flex;align-items:center;justify-content:center;text-align:center;
+  min-width:0;min-height:52px;padding:10px 7px;line-height:1.4;overflow-wrap:anywhere}
+@media(max-width:375px){.radar-links{gap:7px}.radar-links a{font-size:12px;padding:9px 5px}}
 </style></head>
 <body><main><header class="top"><div class="eyebrow">NFC WEATHER DASHBOARD</div><h1>お出かけ天気チェック</h1><div class="hero-layout"><div class="current"><div class="emoji" id="nowIcon">🌤️</div><div><div class="temperature-line"><div class="temp" id="nowTemp">--°</div><button id="refresh" class="refresh-icon" type="button" title="天気を更新" aria-label="天気を更新">↻</button></div><div class="weather-place-line"><div class="condition" id="nowCond">天気情報を取得中</div><div class="location" id="where">📍 つくば</div></div><div id="refreshFeedback" class="refresh-feedback" role="status" aria-live="polite"></div></div></div><div class="controls"><button id="gps">📍 現在地で更新</button><select id="city" aria-label="地域を選ぶ"><option value="">地域を選択</option><option value="43.0618,141.3545,札幌">札幌</option><option value="36.3966,138.4255,小諸">小諸</option><option value="36.3659,140.4713,水戸">水戸</option><option value="36.0835,140.0764,つくば" selected>つくば</option><option value="35.6812,139.7671,東京">東京</option><option value="35.6547,139.7959,豊洲">豊洲</option><option value="35.1815,136.9066,名古屋">名古屋</option><option value="34.6937,135.5023,大阪">大阪</option><option value="33.5902,130.4017,福岡">福岡</option></select><select id="model" aria-label="天気予報モデル"><option value="best_match">自動選択</option><option value="jma_seamless">気象庁（日本）</option><option value="ecmwf_ifs025">欧州（ECMWF）</option><option value="ncep_gfs_seamless">米国（GFS）</option></select></div></div></header>
 <div class="section">☀️ 今日の天気</div><section class="card"><div class="twocol"><div><div class="small">最高 / 最低気温</div><div class="metric" id="todayTemp">-- / --°</div><div class="small" id="todayCond">--</div></div><div><div class="small">降水確率（日最大）</div><div class="metric" id="todayRain">--%</div><div class="small">時間帯別ではありません</div></div></div><div class="notice" id="umbrella">☂️ 傘の目安を確認中</div></section>
@@ -142,7 +153,7 @@
 <div class="quick-item"><div class="quick-label">🏜️ ダスト</div><div class="quick-result" id="dustGrade">取得中…</div><div class="quick-note" id="dust">--</div></div>
 </div>
 <details class="support-details"><summary>判定の補足と情報リンク</summary><div class="statusline" id="airStatus">空気質データを取得中…</div><div class="statusline">🌲 花粉：地点別の国内リアルタイム数値は取得していません。</div><div class="linkrow"><a href="https://www.wbgt.env.go.jp/" target="_blank" rel="noopener noreferrer">環境省 暑さ指数 ↗</a><a href="https://www.env.go.jp/air/osen/pm/" target="_blank" rel="noopener noreferrer">大気環境 ↗</a><a href="https://www.jma.go.jp/bosai/map.html#contents=yellow_sand" target="_blank" rel="noopener noreferrer">気象庁 黄砂 ↗</a></div></details></section>
-<div class="section">🌧️ 雨雲レーダー・気象警報</div><section class="card"><div class="warning-status">⚪ 警報・注意報の発表状況：未取得（公式サイトで確認）</div><div class="linkrow"><a id="radarLink" href="https://weather.yahoo.co.jp/weather/zoomradar/" target="_blank" rel="noopener noreferrer">Yahoo! 雨雲レーダー ↗</a><a href="https://weathernews.jp/onebox/radar/" target="_blank" rel="noopener noreferrer">ウェザーニュース レーダー ↗</a><a href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener noreferrer">気象庁 雨雲の動き ↗</a><a href="https://www.jma.go.jp/bosai/warning/" target="_blank" rel="noopener noreferrer">気象庁 警報・注意報 ↗</a></div><div class="muted" style="margin-top:10px">このページは警報・注意報の発表を自動判定しません。発表時も表示色は変わりません。公式サイトで確認してください。</div></section>
+<div class="section">🌧️ 雨雲レーダー・気象警報</div><section class="card"><div class="warning-status">⚪ 警報・注意報の発表状況：未取得（公式サイトで確認）</div><div class="linkrow radar-links"><a id="radarLink" href="https://weather.yahoo.co.jp/weather/zoomradar/" target="_blank" rel="noopener noreferrer">Yahoo! 雨雲レーダー ↗</a><a href="https://weathernews.jp/onebox/radar/" target="_blank" rel="noopener noreferrer">ウェザーニュース レーダー ↗</a><a href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener noreferrer">気象庁 雨雲の動き ↗</a><a href="https://www.jma.go.jp/bosai/warning/" target="_blank" rel="noopener noreferrer">気象庁 警報・注意報 ↗</a></div><div class="muted" style="margin-top:10px">このページは警報・注意報の発表を自動判定しません。発表時も表示色は変わりません。公式サイトで確認してください。</div></section>
 <div class="section">📅 週間天気</div><section class="card weekly" id="weekly"><div class="small">予報を読み込み中…</div></section>
 <div class="section">🔗 ほかの天気予報と比較</div><section class="card"><div class="small">別サービスの予報を確認できます。各社の予報データをこの画面に取り込んでいるわけではありません。</div><div class="externalgrid"><a id="yahooLink" href="https://weather.yahoo.co.jp/weather/" target="_blank" rel="noopener noreferrer">Yahoo!天気 ↗</a><a href="https://weathernews.jp/" target="_blank" rel="noopener noreferrer">ウェザーニュース ↗</a><a id="googleLink" href="https://www.google.com/search?q=%E5%A4%A9%E6%B0%97%E4%BA%88%E5%A0%B1" target="_blank" rel="noopener noreferrer">Google天気 ↗</a></div><div class="modelhint">比較する際は、地点・予報対象時間・降水確率の集計期間が同じか確認してください。</div></section><div class="status" id="status" role="status"></div><div class="bottom">データ提供：<a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>。<a id="apiLink" class="sourcelink" target="_blank" rel="noopener" href="https://api.open-meteo.com/v1/forecast">今回のAPI応答を確認</a>。日別降水確率は日内の最大値です。日本（JMA）選択時の降水確率はJMA由来ではなくOpen-Meteo自動選択モデルの補完値です。モデルごとに取得可能項目・予報期間は異なり、欠損することがあります。「雨の降り始め」は原則として時間別降水量0.2mm/時以上を参考にし、確率0%の時間帯・日付は除外します。雨・雪の天気コードのみでは判定しません。予報上の目安です。v2.0では日別の天気表示を主に6〜18時の時間別予報から推定します。少量・短時間の雨は補足表示し、雨の予報を隠しません。他社の天気表現や予報と一致するとは限りません。「傘の目安」は独自ルール（40%以上で持参推奨、20〜39%で念のため）であり、公式の判断ではありません。現在地は天気取得のために使用し、このページでは保存しません。予報は変わるため、お出かけ前に再確認してください。</div></main>
 <script>
@@ -264,7 +275,13 @@ const day=data.daily;const prob=day.precipitation_probability_max?.[0];const rai
 if(prob!=null&&rain!=null){if(prob>=60||rain>=3){grade='😟 外干しは控えめに';reason='日最大降水確率 '+pct(prob)+'%、予想降水量 '+rain+'mm。';}
 else if(prob>=30||rain>=0.5||sunH<2){grade='😐 外干しは慎重に';reason='日最大降水確率 '+pct(prob)+'%、予想日照 '+sunH.toFixed(1)+'時間。';}
 else{grade='😊 外干しに比較的向いています';reason='日最大降水確率 '+pct(prob)+'%、予想日照 '+sunH.toFixed(1)+'時間。';}}
-$('laundry').textContent=grade.includes('控えめ')?'🔴 控える':grade.includes('慎重')?'🟡 注意':grade.includes('向いて')?'🟢 良好':'⚪ 不明';$('laundryDetail').textContent=reason?('降水 '+pct(prob)+'% / 日照 '+sunH.toFixed(1)+'h'):'データ不足';
+$('laundry').textContent=grade.includes('控えめ')?'🔴 控える':grade.includes('慎重')?'🟡 注意':grade.includes('向いて')?'🟢 良好':'⚪ 不明';if(reason){
+  const detail=$('laundryDetail');detail.replaceChildren();
+  const rainText=document.createElement('span');rainText.className='laundry-detail-part';rainText.textContent='降水 '+pct(prob)+'%';
+  const separator=document.createElement('span');separator.className='laundry-detail-sep';separator.textContent=' / ';
+  const sunText=document.createElement('span');sunText.className='laundry-detail-part';sunText.textContent='日照 '+sunH.toFixed(1)+'h';
+  detail.append(rainText,separator,sunText);
+ }else{$('laundryDetail').textContent='データ不足';}
 }
 
 // v2.0: optional enriched data uses best_match and never prevents the core forecast from loading.
