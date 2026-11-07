@@ -126,16 +126,19 @@
 #timeline.timeline .timeitem .daylabel{font-size:10px;color:#41658c;white-space:nowrap;min-height:14px;margin-bottom:4px;font-weight:700}
 @media(max-width:375px){#timeline.timeline .timeitem{flex-basis:63px;min-width:63px}}
 
-/* v2.9 mobile layout: keep precipitation and sunshine values together */
+/* v2.9 mobile polish: keep each reading and its unit together */
+.quick-note .detail-line{display:inline;white-space:nowrap}
+.quick-note .detail-line + .detail-line::before{content:" / ";white-space:pre}
 @media(max-width:519px){
-  #laundryDetail .laundry-detail-part{display:block;white-space:nowrap}
-  #laundryDetail .laundry-detail-sep{display:none}
+  .quick-note .detail-line{display:block;white-space:nowrap}
+  .quick-note .detail-line + .detail-line::before{content:none}
+  .quick-note{overflow-wrap:normal;word-break:normal}
 }
-/* Equal-width official radar / warning links: two columns on every screen */
-.radar-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.radar-links a{display:flex;align-items:center;justify-content:center;text-align:center;
-  min-width:0;min-height:52px;padding:10px 7px;line-height:1.4;overflow-wrap:anywhere}
-@media(max-width:375px){.radar-links{gap:7px}.radar-links a{font-size:12px;padding:9px 5px}}
+/* Radar/warning: four equal-width, slim, vertically stacked buttons */
+.radar-links{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;max-width:340px;margin:9px auto 0}
+.radar-links a{display:flex;align-items:center;justify-content:center;min-width:0;width:100%;
+  min-height:37px;padding:7px 10px;text-align:center;line-height:1.35;font-size:13px;white-space:nowrap}
+@media(max-width:375px){.radar-links a{font-size:12px;padding:7px 5px}}
 </style></head>
 <body><main><header class="top"><div class="eyebrow">NFC WEATHER DASHBOARD</div><h1>お出かけ天気チェック</h1><div class="hero-layout"><div class="current"><div class="emoji" id="nowIcon">🌤️</div><div><div class="temperature-line"><div class="temp" id="nowTemp">--°</div><button id="refresh" class="refresh-icon" type="button" title="天気を更新" aria-label="天気を更新">↻</button></div><div class="weather-place-line"><div class="condition" id="nowCond">天気情報を取得中</div><div class="location" id="where">📍 つくば</div></div><div id="refreshFeedback" class="refresh-feedback" role="status" aria-live="polite"></div></div></div><div class="controls"><button id="gps">📍 現在地で更新</button><select id="city" aria-label="地域を選ぶ"><option value="">地域を選択</option><option value="43.0618,141.3545,札幌">札幌</option><option value="36.3966,138.4255,小諸">小諸</option><option value="36.3659,140.4713,水戸">水戸</option><option value="36.0835,140.0764,つくば" selected>つくば</option><option value="35.6812,139.7671,東京">東京</option><option value="35.6547,139.7959,豊洲">豊洲</option><option value="35.1815,136.9066,名古屋">名古屋</option><option value="34.6937,135.5023,大阪">大阪</option><option value="33.5902,130.4017,福岡">福岡</option></select><select id="model" aria-label="天気予報モデル"><option value="best_match">自動選択</option><option value="jma_seamless">気象庁（日本）</option><option value="ecmwf_ifs025">欧州（ECMWF）</option><option value="ncep_gfs_seamless">米国（GFS）</option></select></div></div></header>
 <div class="section">☀️ 今日の天気</div><section class="card"><div class="twocol"><div><div class="small">最高 / 最低気温</div><div class="metric" id="todayTemp">-- / --°</div><div class="small" id="todayCond">--</div></div><div><div class="small">降水確率（日最大）</div><div class="metric" id="todayRain">--%</div><div class="small">時間帯別ではありません</div></div></div><div class="notice" id="umbrella">☂️ 傘の目安を確認中</div></section>
@@ -246,6 +249,10 @@ let previous=$('fallbackApiLink');if(previous)previous.remove();
 if(fallbackParams){const a=document.createElement('a');a.id='fallbackApiLink';a.href=api+fallbackParams;a.target='_blank';a.rel='noopener noreferrer';a.textContent=' / 降水確率の補完APIを確認';$('apiLink').after(a);}
 }catch(e){if(requestId!==coreSeq)return;$('status').textContent='取得できませんでした：'+e.message+'。通信状況を確認し、更新してください。';refreshFeedback('⚠ 更新失敗（詳細は下部）');}
 }
+function setQuickDetail(id,parts){
+ const el=$(id);el.replaceChildren();
+ parts.forEach(part=>{const span=document.createElement('span');span.className='detail-line';span.textContent=part;el.append(span);});
+}
 function renderExtras(data){
 const h=data.hourly||{};if(!h.time?.length){$('rainStart').textContent='時間別予報がありません';return;}
 // API returns local ISO date/times due to timezone=auto; compare in location time using its configured offset.
@@ -275,13 +282,9 @@ const day=data.daily;const prob=day.precipitation_probability_max?.[0];const rai
 if(prob!=null&&rain!=null){if(prob>=60||rain>=3){grade='😟 外干しは控えめに';reason='日最大降水確率 '+pct(prob)+'%、予想降水量 '+rain+'mm。';}
 else if(prob>=30||rain>=0.5||sunH<2){grade='😐 外干しは慎重に';reason='日最大降水確率 '+pct(prob)+'%、予想日照 '+sunH.toFixed(1)+'時間。';}
 else{grade='😊 外干しに比較的向いています';reason='日最大降水確率 '+pct(prob)+'%、予想日照 '+sunH.toFixed(1)+'時間。';}}
-$('laundry').textContent=grade.includes('控えめ')?'🔴 控える':grade.includes('慎重')?'🟡 注意':grade.includes('向いて')?'🟢 良好':'⚪ 不明';if(reason){
-  const detail=$('laundryDetail');detail.replaceChildren();
-  const rainText=document.createElement('span');rainText.className='laundry-detail-part';rainText.textContent='降水 '+pct(prob)+'%';
-  const separator=document.createElement('span');separator.className='laundry-detail-sep';separator.textContent=' / ';
-  const sunText=document.createElement('span');sunText.className='laundry-detail-part';sunText.textContent='日照 '+sunH.toFixed(1)+'h';
-  detail.append(rainText,separator,sunText);
- }else{$('laundryDetail').textContent='データ不足';}
+$('laundry').textContent=grade.includes('控えめ')?'🔴 控える':grade.includes('慎重')?'🟡 注意':grade.includes('向いて')?'🟢 良好':'⚪ 不明';
+ if(reason)setQuickDetail('laundryDetail',['降水 '+pct(prob)+'%','日照 '+sunH.toFixed(1)+'h']);
+ else $('laundryDetail').textContent='データ不足';
 }
 
 // v2.0: optional enriched data uses best_match and never prevents the core forecast from loading.
@@ -307,7 +310,7 @@ function renderNewExtras(core){
    heat=elevated?'⚠️ 高温に注意':moderate?'🌤️ 暑さに注意':'✅ 現時点の気温では高温リスクは低め';
    heatText='気温 '+fmt(heatTemp)+'℃ / 湿度 '+fmt(humid)+'% / 体感 '+fmt(feel)+'℃。簡易目安であり、熱中症・公式WBGT判定ではありません。';
   }
-  $('heatLevel').textContent=heat.includes('高温に注意')?'🔴 高温注意':heat.includes('暑さに注意')?'🟡 注意':heat.includes('低め')?'🟢 低め':'⚪ 不明';$('heatDetail').textContent=Number.isFinite(heatTemp)?'気温 '+fmt(heatTemp)+'℃ / 湿度 '+fmt(humid)+'%':'データ不足';
+  $('heatLevel').textContent=heat.includes('高温に注意')?'🔴 高温注意':heat.includes('暑さに注意')?'🟡 注意':heat.includes('低め')?'🟢 低め':'⚪ 不明';if(Number.isFinite(heatTemp))setQuickDetail('heatDetail',['気温 '+fmt(heatTemp)+'℃','湿度 '+fmt(humid)+'%']);else $('heatDetail').textContent='データ不足';
   $('goAdvice').textContent=(wind>=36||gust>=54?'💨 強い風に注意。':heatTemp>=30?'🥵 暑さ対策を。':feel<12?'🧥 防寒用の上着があると安心。':'🚶 気温・風を確認してお出かけを。')+' 雨の判断は下の時間別予報も確認してください。';
   const h=d.hourly||{},target=$('timeline');target.replaceChildren();const localNow=new Date(Date.now()+(d.utc_offset_seconds||0)*1000).toISOString().slice(0,13)+':00';let i=(h.time||[]).findIndex(x=>x>=localNow);if(i<0)i=0;
   for(let j=i;j<Math.min(i+48,h.time?.length||0);j++){
@@ -336,7 +339,7 @@ let airSeq=0;
 async function loadAirQuality(lat,lon){const seq=++airSeq;for(const id of ['pm25','dust'])$(id).textContent='--';for(const id of ['pm25Grade','dustGrade'])$(id).textContent='取得中…';$('airStatus').textContent='空気質予測を取得しています…';try{
  const q=new URLSearchParams({latitude:lat,longitude:lon,current:'pm2_5,dust',timezone:'auto'});
  const d=await fetchJson('https://air-quality-api.open-meteo.com/v1/air-quality?'+q);if(seq!==airSeq)return;
- const pm=d.current?.pm2_5,du=d.current?.dust;$('pm25').textContent=pm==null?'数値取得不可':fmt(pm)+' μg/m³';$('dust').textContent=du==null?'数値取得不可':fmt(du)+' μg/m³';$('pm25Grade').textContent=pm==null?'⚪ 不明':pm>=35?'🔴 高め':pm>=15?'🟡 やや高め':'🟢 低め';$('dustGrade').textContent=du==null?'⚪ 不明':'🔵 数値参照';
+ const pm=d.current?.pm2_5,du=d.current?.dust;if(pm==null)$('pm25').textContent='数値取得不可';else setQuickDetail('pm25',[fmt(pm),'μg/m³']);if(du==null)$('dust').textContent='数値取得不可';else setQuickDetail('dust',[fmt(du),'μg/m³']);$('pm25Grade').textContent=pm==null?'⚪ 不明':pm>=35?'🔴 高め':pm>=15?'🟡 やや高め':'🟢 低め';$('dustGrade').textContent=du==null?'⚪ 不明':'🔵 数値参照';
  $('airStatus').textContent='Open-Meteo大気質モデルの推定値です。ダスト濃度は黄砂固有の測定値ではなく、PM2.5も実測値ではありません。';
  }catch(e){if(seq!==airSeq)return;$('airStatus').textContent='この地点の空気質データは取得できませんでした。リンク先で確認してください。';for(const id of ['pm25Grade','dustGrade'])$(id).textContent='⚪ 不明';}}
 
