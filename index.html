@@ -211,9 +211,9 @@
   <div class="day-compare-grid">
     <div class="day-compare-panel"><div class="day-compare-heading">今日</div><div class="day-compare-icon" id="todayIcon">🌤️</div><div class="day-compare-condition" id="todayCond">--</div><div class="day-compare-temp" id="todayTemp">--° / --°</div><div class="day-compare-temp-label">最高 / 最低</div><div class="day-compare-rain">☂ 降水確率 <strong id="todayRain">--%</strong></div><div class="day-compare-umbrella" id="umbrella">傘の目安を確認中</div></div>
     <div class="day-compare-panel"><div class="day-compare-heading">明日</div><div class="day-compare-icon" id="tomIcon">🌤️</div><div class="day-compare-condition" id="tomCond">--</div><div class="day-compare-temp" id="tomTemps">--° / --°</div><div class="day-compare-temp-label">最高 / 最低</div><div class="day-compare-rain">☂ 降水確率 <strong id="tomRain">--%</strong></div><div class="day-compare-umbrella" id="tomUmbrella">傘の目安を確認中</div></div>
-  </div><div class="day-compare-footnote">降水確率は各日の日最大値です。傘の目安は独自基準で判定しています。</div>
+  </div>
 </section>
-<div class="section">🕒 この先48時間の天気</div><section class="card"><div class="hour-chart-toolbar"><span class="hour-chart-title">📈 気温と降水確率の推移</span><div class="hour-chart-legend"><span class="legend-temp">気温（℃）</span><span class="legend-rain">降水確率（%）</span></div></div><div id="hourChart" class="hour-chart" role="img" aria-label="この先48時間の気温と降水確率の推移">グラフを取得中…</div><div class="hour-chart-hint" id="hourChartHint">左目盛り：気温（℃）／右目盛り：降水確率（%）。</div><div class="hour-chart-divider"></div><div class="hour-detail-title">時間別の詳細予報 </div><div class="timeline" id="timeline"><div class="small">時間別予報を取得しています…</div></div><div class="hour-chart-hint" style="margin-top:7px">雨量は1時間合計（mm）、風速はm/s、視程はkmに換算した予測値です。</div></section>
+<div class="section">🕒 この先48時間の天気</div><section class="card"><div class="hour-chart-toolbar"><span class="hour-chart-title">📈 気温と降水確率の推移</span><div class="hour-chart-legend"><span class="legend-temp">気温（℃）</span><span class="legend-rain">降水確率（%）</span></div></div><div id="hourChart" class="hour-chart" role="img" aria-label="この先48時間の気温と降水確率の推移">グラフを取得中…</div><div class="hour-chart-divider"></div><div class="hour-detail-title">時間別の詳細予報 </div><div class="timeline" id="timeline"><div class="small">時間別予報を取得しています…</div></div></section>
 <div class="section">🌧️ 雨の降り始め目安</div><section class="card"><div class="metric" id="rainStart" style="font-size:20px">取得中…</div><div class="small" id="rainStartDetail">時間別予報から推定します。雨雲レーダーではありません。</div></section>
 <div class="section">🚶 お出かけ直前チェック</div><section class="card"><div class="notice" id="goAdvice">外出情報を取得しています…</div><div class="extraGrid" style="margin-top:12px"><div class="tile"><div class="small">🌡️ 体感温度</div><div class="metric" id="feelsLike">--°</div><div class="small" id="clothes">服装アドバイス取得中</div></div><div class="tile"><div class="small">💨 現在の風速・突風</div><div class="metric" id="windNow">--</div><div class="small" id="windNote">強風の目安を取得中</div></div><div class="tile"><div class="small">☀️ 本日のUV最大</div><div class="metric" id="uvIndex">--</div><div class="small" id="uvNote">紫外線指数</div></div><div class="tile"><div class="small">🌇 日の出 / 日の入り</div><div class="metric" id="sunTimes">-- / --</div><div class="small">選択地点の現地時刻</div></div></div></section>
 
@@ -456,7 +456,7 @@ function drawWeatherChart(data,start){
  out+=el('text',{x:left,y:10,fill:'#68788a','font-size':11,'font-weight':700},'℃');
  out+=el('text',{x:W-right,y:10,'text-anchor':'end',fill:'#68788a','font-size':11,'font-weight':700},'%');
  root.innerHTML=el('svg',{viewBox:'0 0 '+W+' '+H,xmlns:'http://www.w3.org/2000/svg',role:'img','aria-label':'48時間の気温（オレンジの折れ線・左軸）と降水確率（青の棒・右軸）の複合グラフ'},out);
- $('hourChartHint').textContent='オレンジ線＝気温（左軸・℃）／青い棒＝降水確率（右軸・%）。';
+
 }
 
 let gpsSeq=0;
