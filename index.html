@@ -166,11 +166,36 @@
 #timeline.timeline .timeitem .extra-reading{margin-top:5px;font-size:10px;color:#506783;white-space:nowrap;line-height:1.35}
 #timeline.timeline .timeitem .extra-reading.precip{color:#236ca5;font-weight:650}
 @media(max-width:375px){#timeline.timeline .timeitem{flex-basis:79px;min-width:79px}.hour-chart-tabs button{padding:5px 6px;font-size:10px}}
+
+/* v3.1: paired daily forecasts and dual-axis chart */
+.day-compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.day-compare-panel{min-width:0;background:#f5f8fd;border:1px solid #e0e8f3;border-radius:13px;padding:13px 9px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.day-compare-heading{font-size:15px;font-weight:800;color:#254c75}
+.day-compare-icon{font-size:36px;line-height:1.3;margin-top:5px}
+.day-compare-condition{font-size:12px;font-weight:700;line-height:1.4;min-height:34px;display:flex;align-items:center;justify-content:center;overflow-wrap:anywhere}
+.day-compare-temp{font-size:clamp(17px,4.6vw,26px);font-weight:800;letter-spacing:-.04em;white-space:nowrap;margin-top:7px}
+.day-compare-temp-label{font-size:10px;color:#718399;margin-top:2px}
+.day-compare-rain{font-size:12px;margin-top:12px;color:#386d9e;white-space:nowrap}
+.day-compare-rain strong{font-size:17px}
+.day-compare-umbrella{margin-top:11px;border-radius:9px;padding:9px 5px;width:100%;font-weight:750;font-size:12px;min-height:36px;display:flex;align-items:center;justify-content:center}
+.day-compare-umbrella.warn{background:#fff0da;color:#965719}.day-compare-umbrella.caution{background:#fef7e1;color:#86651b}.day-compare-umbrella.good{background:#e8f5ee;color:#246849}.day-compare-umbrella.unknown{background:#edf1f6;color:#61728a}
+.day-compare-footnote{margin-top:10px;font-size:10px;color:#708095;line-height:1.5}
+.hour-chart-legend{display:flex;gap:11px;flex-wrap:wrap;font-size:11px;font-weight:750}
+.hour-chart-legend span:before{content:'';display:inline-block;width:17px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}
+.legend-temp{color:#b35d3b}.legend-temp:before{background:#dc7042}.legend-rain{color:#2679b7}.legend-rain:before{background:#267fc6}
+#timeline.timeline .timeitem{flex-basis:83px;min-width:83px}
+#timeline.timeline .timeitem .rainvalue{font-size:11px;margin-top:6px;font-weight:700}
+@media(max-width:390px){.day-compare-grid{gap:7px}.day-compare-panel{padding:11px 5px}.day-compare-rain{font-size:11px}.day-compare-rain strong{font-size:15px}.day-compare-umbrella{font-size:10px}.day-compare-condition{font-size:11px}}
 </style></head>
 <body><main><header class="top"><div class="eyebrow">NFC WEATHER DASHBOARD</div><h1>お出かけ天気チェック</h1><div class="hero-layout"><div class="current"><div class="emoji" id="nowIcon">🌤️</div><div><div class="temperature-line"><div class="temp" id="nowTemp">--°</div><button id="refresh" class="refresh-icon" type="button" title="天気を更新" aria-label="天気を更新">↻</button></div><div class="weather-place-line"><div class="condition" id="nowCond">天気情報を取得中</div><div class="location" id="where">📍 つくば</div></div><div id="refreshFeedback" class="refresh-feedback" role="status" aria-live="polite"></div></div></div><div class="controls"><button id="gps">📍 現在地で更新</button><select id="city" aria-label="地域を選ぶ"><option value="">地域を選択</option><option value="43.0618,141.3545,札幌">札幌</option><option value="38.2682,140.8694,仙台">仙台</option><option value="36.3966,138.4255,小諸">小諸</option><option value="36.3659,140.4713,水戸">水戸</option><option value="36.0835,140.0764,つくば" selected>つくば</option><option value="35.8617,139.6455,さいたま">さいたま</option><option value="35.6074,140.1065,千葉">千葉</option><option value="35.6812,139.7671,東京">東京</option><option value="35.6547,139.7959,豊洲">豊洲</option><option value="35.4437,139.6380,横浜">横浜</option><option value="36.5613,136.6562,金沢">金沢</option><option value="35.1815,136.9066,名古屋">名古屋</option><option value="35.0116,135.7681,京都">京都</option><option value="34.6937,135.5023,大阪">大阪</option><option value="34.6901,135.1955,神戸">神戸</option><option value="34.3853,132.4553,広島">広島</option><option value="33.5902,130.4017,福岡">福岡</option><option value="26.2124,127.6809,那覇">那覇</option></select><select id="model" aria-label="天気予報モデル"><option value="best_match">自動選択</option><option value="jma_seamless">気象庁（日本）</option><option value="ecmwf_ifs025">欧州（ECMWF）</option><option value="ncep_gfs_seamless">米国（GFS）</option></select></div></div></header>
-<div class="section">☀️ 今日の天気</div><section class="card"><div class="twocol"><div><div class="small">最高 / 最低気温</div><div class="metric" id="todayTemp">-- / --°</div><div class="small" id="todayCond">--</div></div><div><div class="small">降水確率（日最大）</div><div class="metric" id="todayRain">--%</div><div class="small">時間帯別ではありません</div></div></div><div class="notice" id="umbrella">☂️ 傘の目安を確認中</div></section>
-<div class="section">🕒 この先48時間の天気</div><section class="card"><div class="hour-chart-toolbar"><span class="hour-chart-title">📈 48時間の推移</span><div class="hour-chart-tabs" role="group" aria-label="グラフの表示項目"><button type="button" class="active" data-weather-chart="temp" aria-pressed="true">気温</button><button type="button" data-weather-chart="prob" aria-pressed="false">降水確率</button><button type="button" data-weather-chart="rain" aria-pressed="false">降水量</button><button type="button" data-weather-chart="cloud" aria-pressed="false">雲量</button><button type="button" data-weather-chart="visibility" aria-pressed="false">視程</button></div></div><div id="hourChart" class="hour-chart" role="img" aria-label="この先48時間の気象予報グラフ">グラフを取得中…</div><div class="hour-chart-hint" id="hourChartHint">グラフは48時間全体を表示します。下の時間別予報は左右にスクロールできます。</div><div class="hour-chart-divider"></div><div class="hour-detail-title">時間別予報 <span style="font-weight:400;color:#718399">← 左右にスクロール →</span></div><div class="timeline" id="timeline"><div class="small">時間別予報を取得しています…</div></div><div class="hour-chart-hint" style="margin-top:7px">降水量は1時間合計（mm）、雲量は全天の被覆率（%）、視程は予測上の見通せる距離（km）です。いずれも予測値であり、現地の実測値ではありません。</div></section>
-<div class="section">🌙 明日の天気</div><section class="card"><div class="weatherline"><span class="w" id="tomIcon">🌤️</span><div><strong id="tomCond">--</strong><div class="small" id="tomTemps">最高 --° / 最低 --°</div><div class="small" id="tomRain">降水確率 --%</div></div></div></section>
+<div class="section">☀️ 今日・明日の天気</div>
+<section class="card day-comparison">
+  <div class="day-compare-grid">
+    <div class="day-compare-panel"><div class="day-compare-heading">今日</div><div class="day-compare-icon" id="todayIcon">🌤️</div><div class="day-compare-condition" id="todayCond">--</div><div class="day-compare-temp" id="todayTemp">--° / --°</div><div class="day-compare-temp-label">最高 / 最低</div><div class="day-compare-rain">☂ 降水確率 <strong id="todayRain">--%</strong></div><div class="day-compare-umbrella" id="umbrella">傘の目安を確認中</div></div>
+    <div class="day-compare-panel"><div class="day-compare-heading">明日</div><div class="day-compare-icon" id="tomIcon">🌤️</div><div class="day-compare-condition" id="tomCond">--</div><div class="day-compare-temp" id="tomTemps">--° / --°</div><div class="day-compare-temp-label">最高 / 最低</div><div class="day-compare-rain">☂ 降水確率 <strong id="tomRain">--%</strong></div><div class="day-compare-umbrella" id="tomUmbrella">傘の目安を確認中</div></div>
+  </div><div class="day-compare-footnote">降水確率は各日の日最大値です。傘の目安は独自基準で判定しています。</div>
+</section>
+<div class="section">🕒 この先48時間の天気</div><section class="card"><div class="hour-chart-toolbar"><span class="hour-chart-title">📈 気温と降水確率の推移</span><div class="hour-chart-legend"><span class="legend-temp">気温（℃）</span><span class="legend-rain">降水確率（%）</span></div></div><div id="hourChart" class="hour-chart" role="img" aria-label="この先48時間の気温と降水確率の推移">グラフを取得中…</div><div class="hour-chart-hint" id="hourChartHint">左目盛り：気温（℃）／右目盛り：降水確率（%）。下の時間別予報は左右にスクロールできます。</div><div class="hour-chart-divider"></div><div class="hour-detail-title">時間別の詳細予報 <span style="font-weight:400;color:#718399">← 左右にスクロール →</span></div><div class="timeline" id="timeline"><div class="small">時間別予報を取得しています…</div></div><div class="hour-chart-hint" style="margin-top:7px">時間別予報の順番：天気・降水確率・風速・雨量・雲量・視程。雨量は1時間合計（mm）、風速はm/s、視程はkm換算した予測値です。</div></section>
 <div class="section">🌧️ 雨の降り始め目安</div><section class="card"><div class="metric" id="rainStart" style="font-size:20px">取得中…</div><div class="small" id="rainStartDetail">時間別予報から推定します。雨雲レーダーではありません。</div></section>
 <div class="section">🕒 3時間ごとの降水確率</div><section class="card"><div id="hourlyRows" class="hourly"></div></section>
 <div class="section">🚶 お出かけ直前チェック</div><section class="card"><div class="notice" id="goAdvice">外出情報を取得しています…</div><div class="extraGrid" style="margin-top:12px"><div class="tile"><div class="small">🌡️ 体感温度</div><div class="metric" id="feelsLike">--°</div><div class="small" id="clothes">服装アドバイス取得中</div></div><div class="tile"><div class="small">💨 現在の風速・突風</div><div class="metric" id="windNow">--</div><div class="small" id="windNote">強風の目安を取得中</div></div><div class="tile"><div class="small">☀️ 本日のUV最大</div><div class="metric" id="uvIndex">--</div><div class="small" id="uvNote">紫外線指数</div></div><div class="tile"><div class="small">🌇 日の出 / 日の入り</div><div class="metric" id="sunTimes" style="font-size:17px">-- / --</div><div class="small">選択地点の現地時刻</div></div></div></section>
@@ -264,11 +289,12 @@ if(isJma){
 }
 const d=data.daily;const at=i=>({date:d.time[i],code:d.weather_code?.[i],hi:d.temperature_2m_max?.[i],lo:d.temperature_2m_min?.[i],rain:d.precipitation_probability_max?.[i]});const today=at(0),tom=at(1);const todaySky=daySummary(data,0),tomSky=daySummary(data,1);
 $('nowTemp').textContent=round(data.current.temperature_2m)+'°';$('nowCond').textContent=label(data.current.weather_code)[0];$('nowIcon').textContent=label(data.current.weather_code)[1];
-$('todayTemp').textContent=round(today.hi)+'° / '+round(today.lo)+'°';$('todayCond').textContent=todaySky.icon+' '+todaySky.name;$('todayRain').textContent=today.rain==null?'--':pct(today.rain)+'%';
-const umbrella=$('umbrella');let msg;if(today.rain==null){msg='☂️ 降水確率が取得できません';}else if(today.rain>=40){msg='☂️ 傘を持っていくのがおすすめ';}else if(today.rain>=20){msg='🌂 折りたたみ傘があると安心';}else{msg='☀️ 傘は基本的に不要そうです';}
-umbrella.textContent=msg;umbrella.classList.toggle('warn',today.rain!=null&&today.rain>=40);
-$('tomIcon').textContent=tomSky.icon;$('tomCond').textContent=tomSky.name;$('tomTemps').textContent='最高 '+round(tom.hi)+'° / 最低 '+round(tom.lo)+'°';$('tomRain').textContent='降水確率（日最大） '+(tom.rain==null?'--':pct(tom.rain)+'%');
-renderExtras(data);renderNewExtras(data);void loadAirQuality(lat,lon);$('weekly').replaceChildren();for(let i=0;i<d.time.length;i++){const item=at(i),dt=new Date(item.date+'T12:00:00'),row=document.createElement('div');row.className='day';const cells=[`${dt.getMonth()+1}/${dt.getDate()} (${names[dt.getDay()]})`,daySummary(data,i).icon,`<strong>${round(item.hi)}°</strong> / ${round(item.lo)}°`, `☂ ${item.rain==null?'--':pct(item.rain)+'%'} `];for(let j=0;j<4;j++){const el=document.createElement('div');el.className=['date','w','daytemp','rain'][j];if(j===2)el.innerHTML=cells[j];else el.textContent=cells[j];row.appendChild(el)}row.title=daySummary(data,i).name;$('weekly').appendChild(row)}
+$('todayIcon').textContent=todaySky.icon;
+ $('todayTemp').textContent=round(today.hi)+'° / '+round(today.lo)+'°';$('todayCond').textContent=todaySky.name;$('todayRain').textContent=today.rain==null?'--':pct(today.rain)+'%';
+ $('tomIcon').textContent=tomSky.icon;$('tomCond').textContent=tomSky.name;$('tomTemps').textContent=round(tom.hi)+'° / '+round(tom.lo)+'°';$('tomRain').textContent=tom.rain==null?'--':pct(tom.rain)+'%';
+ const umbrellaAdvice=rain=>rain==null?['⚪ 判定できません','unknown']:rain>=40?['☂️ 傘を持参','warn']:rain>=20?['🌂 折りたたみ傘','caution']:['☀️ 傘は基本不要','good'];
+ for(const [id,rain] of [['umbrella',today.rain],['tomUmbrella',tom.rain]]){const el=$(id);const [message,tone]=umbrellaAdvice(rain);el.textContent=message;el.className='day-compare-umbrella '+tone;}
+ renderExtras(data);renderNewExtras(data);void loadAirQuality(lat,lon);$('weekly').replaceChildren();for(let i=0;i<d.time.length;i++){const item=at(i),dt=new Date(item.date+'T12:00:00'),row=document.createElement('div');row.className='day';const cells=[`${dt.getMonth()+1}/${dt.getDate()} (${names[dt.getDay()]})`,daySummary(data,i).icon,`<strong>${round(item.hi)}°</strong> / ${round(item.lo)}°`, `☂ ${item.rain==null?'--':pct(item.rain)+'%'} `];for(let j=0;j<4;j++){const el=document.createElement('div');el.className=['date','w','daytemp','rain'][j];if(j===2)el.innerHTML=cells[j];else el.textContent=cells[j];row.appendChild(el)}row.title=daySummary(data,i).name;$('weekly').appendChild(row)}
 $('status').textContent='更新：'+new Date().toLocaleString('ja-JP')+' / 気温・天気・降水量：'+modelNames[selected]+' / 降水確率：'+probabilitySource;refreshFeedback('✓ 更新 '+new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit',second:'2-digit'}));
 
 $('apiLink').href=api+params;$('apiLink').textContent=isJma?'JMAのAPI応答を確認':'今回のAPI応答を確認';
@@ -352,7 +378,7 @@ function renderNewExtras(core){
     if(isDaybreak)row.classList.add('daybreak');
     const time=document.createElement('div');time.textContent=hour;
     const ico=document.createElement('span');ico.className='w';ico.textContent=l[1];
-    const tempEl=document.createElement('div');tempEl.className='timevalue';tempEl.textContent=fmt(h.temperature_2m?.[j])+'℃';
+    
     const rainEl=document.createElement('div');rainEl.className='rainvalue';rainEl.textContent='☂ '+(h.precipitation_probability?.[j]==null?'--':fmt(h.precipitation_probability[j]))+'%';
     const windEl=document.createElement('div');windEl.className='windvalue';
     const windKmH=h.wind_speed_10m?.[j];windEl.textContent='💨 '+(windKmH==null?'--':(Number(windKmH)/3.6).toFixed(1))+' m/s';
@@ -360,7 +386,7 @@ function renderNewExtras(core){
      const precipEl=document.createElement('div');precipEl.className='extra-reading precip';precipEl.textContent='雨量 '+(amount==null?'--':Number(amount).toFixed(1))+' mm';
      const cloudEl=document.createElement('div');cloudEl.className='extra-reading';cloudEl.textContent='雲量 '+(cloud==null?'--':fmt(cloud))+'%';
      const visibilityEl=document.createElement('div');visibilityEl.className='extra-reading';visibilityEl.textContent='視程 '+(vis==null?'--':(Number(vis)/1000).toFixed(1))+' km';
-     row.append(dayLabel,time,ico,tempEl,rainEl,windEl,precipEl,cloudEl,visibilityEl);row.title=l[0];target.append(row);
+     row.append(dayLabel,time,ico,rainEl,windEl,precipEl,cloudEl,visibilityEl);row.title=l[0];target.append(row);
   }
    target.scrollLeft=0;
    drawWeatherChart(h,i);
@@ -376,45 +402,39 @@ async function loadAirQuality(lat,lon){const seq=++airSeq;for(const id of ['pm25
  }catch(e){if(seq!==airSeq)return;$('airStatus').textContent='この地点の空気質データは取得できませんでした。リンク先で確認してください。';for(const id of ['pm25Grade','dustGrade'])$(id).textContent='⚪ 不明';}}
 
 
-// Overview chart: an inline SVG generated without external graphing libraries.
-let weatherChartData=null,weatherChartStart=0,weatherChartMode='temp';
-const chartModes={temp:{key:'temperature_2m',label:'気温',unit:'℃',color:'#dc7042'},prob:{key:'precipitation_probability',label:'降水確率',unit:'%',color:'#3985c4'},rain:{key:'precipitation',label:'降水量',unit:'mm',color:'#3183c8'},cloud:{key:'cloud_cover',label:'雲量',unit:'%',color:'#7889ad'},visibility:{key:'visibility',label:'視程',unit:'km',color:'#379a85'}};
+// Dual-axis 48-hour SVG chart. Left: °C; right: probability %.
+let weatherChartData=null,weatherChartStart=0;
 function drawWeatherChart(data,start){
  if(data){weatherChartData=data;weatherChartStart=start;}
  const h=weatherChartData,root=$('hourChart');if(!h?.time?.length){root.textContent='グラフ用データがありません';return;}
- const mode=chartModes[weatherChartMode],series=h[mode.key]||[];
- const n=Math.min(48,h.time.length-weatherChartStart),values=Array.from({length:n},(_,k)=>{const v=series[weatherChartStart+k];return v==null||!Number.isFinite(Number(v))?null:(weatherChartMode==='visibility'?Number(v)/1000:Number(v));});
- if(!values.some(v=>v!==null)){root.textContent='この項目のデータは取得できませんでした';return;}
- const isBar=weatherChartMode==='rain'||weatherChartMode==='prob'||weatherChartMode==='cloud';
- const valid=values.filter(v=>v!==null),fixed=weatherChartMode==='prob'||weatherChartMode==='cloud';
- let min=fixed||isBar?0:Math.floor(Math.min(...valid)-2),max=fixed?100:isBar?Math.max(1,Math.ceil(Math.max(...valid)*1.2)):Math.ceil(Math.max(...valid)+2);
- if(max===min)max=min+1;
- const W=600,H=175,left=38,right=10,top=17,bottom=32,pw=W-left-right,ph=H-top-bottom;
- const x=k=>left+(n<=1?0:k/(n-1)*pw),y=v=>top+(max-v)/(max-min)*ph;
+ const n=Math.min(48,h.time.length-weatherChartStart);
+ const vals=key=>Array.from({length:n},(_,k)=>{const v=h[key]?.[weatherChartStart+k];return v==null||!Number.isFinite(Number(v))?null:Number(v);});
+ const temps=vals('temperature_2m'),prob=vals('precipitation_probability'),validT=temps.filter(v=>v!==null);
+ if(!validT.length&&!prob.some(v=>v!==null)){root.textContent='気温・降水確率データがありません';return;}
+ const lo=validT.length?Math.floor(Math.min(...validT)-2):0,hi=validT.length?Math.ceil(Math.max(...validT)+2):30;
+ const tMin=lo,tMax=Math.max(lo+4,hi);
+ const W=640,H=212,left=39,right=39,top=17,bottom=41,pw=W-left-right,ph=H-top-bottom;
+ const x=k=>left+(n<=1?0:k/(n-1)*pw),yt=v=>top+(tMax-v)/(tMax-tMin)*ph,yp=v=>top+(100-v)/100*ph;
  const el=(tag,attrs,content='')=>'<'+tag+' '+Object.entries(attrs).map(([k,v])=>k+'="'+String(v)+'"').join(' ')+'>'+content+'</'+tag+'>';
  let out='';
- for(let k=0;k<=4;k++){let value=min+(max-min)*k/4,yy=y(value);out+=el('line',{x1:left,y1:yy,x2:W-right,y2:yy,stroke:'#e8edf5','stroke-width':1});out+=el('text',{x:left-5,y:yy+3,'text-anchor':'end',fill:'#718399','font-size':10},weatherChartMode==='rain'?value.toFixed(1):String(Math.round(value)));}
+ for(let k=0;k<=4;k++){
+  const yy=top+ph*k/4;
+  out+=el('line',{x1:left,y1:yy,x2:W-right,y2:yy,stroke:'#e7edf4','stroke-width':1});
+  out+=el('text',{x:left-6,y:yy+3.5,'text-anchor':'end',fill:'#b35d3b','font-size':11},String(Math.round(tMax-(tMax-tMin)*k/4)));
+  out+=el('text',{x:W-right+7,y:yy+3.5,'text-anchor':'start',fill:'#2679b7','font-size':11},String(100-25*k));
+ }
  for(let k=0;k<n;k++){
   const t=h.time[weatherChartStart+k],hour=Number(t.slice(11,13));
   if(k>0&&hour===0)out+=el('line',{x1:x(k),y1:top,x2:x(k),y2:top+ph,stroke:'#a6bed8','stroke-dasharray':'3 4'});
-  if(k===0||hour%6===0)out+=el('text',{x:x(k),y:H-12,'text-anchor':k===0?'start':'middle',fill:'#637a92','font-size':10},(k===0?t.slice(5,10).replace('-','/')+' ':'')+hour+'時');
+  if(k===0||hour%6===0){const label=(k===0?t.slice(5,10).replace('-','/')+' ':'')+String(hour).padStart(2,'0')+'時';out+=el('text',{x:x(k),y:H-17,'text-anchor':k===0?'start':'middle',fill:'#637a92','font-size':11},label);}
  }
- if(isBar){
-  const bw=Math.max(2.5,pw/Math.max(n,2)*0.7);
-  values.forEach((v,k)=>{if(v===null)return;const yy=y(v);out+=el('rect',{x:(x(k)-bw/2).toFixed(2),y:yy.toFixed(2),width:bw.toFixed(2),height:Math.max(0,top+ph-yy).toFixed(2),rx:1.5,fill:mode.color,opacity:.77});});
- }else{
-  let points=[];const flush=()=>{if(points.length>1)out+=el('polyline',{points:points.join(' '),fill:'none',stroke:mode.color,'stroke-width':2.7,'stroke-linejoin':'round','stroke-linecap':'round'});points=[];};
-  values.forEach((v,k)=>{if(v===null){flush();return;}points.push(x(k).toFixed(2)+','+y(v).toFixed(2));});flush();
- }
- out+=el('text',{x:left,y:11,fill:mode.color,'font-size':11,'font-weight':700},mode.label+'（'+mode.unit+'）');
- root.innerHTML=el('svg',{viewBox:'0 0 '+W+' '+H,xmlns:'http://www.w3.org/2000/svg',role:'img','aria-label':'48時間の'+mode.label+'の推移グラフ'},out);
- $('hourChartHint').textContent='48時間の'+mode.label+'の予測推移（'+mode.unit+'）。下の時間別予報は左右にスクロールできます。'+(weatherChartMode==='visibility'?' 視程はメートルの予測値をkmに換算しています。':'');
+ function line(values,y,color){let points=[];const flush=()=>{if(points.length>1)out+=el('polyline',{points:points.join(' '),fill:'none',stroke:color,'stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});else if(points.length===1){const [cx,cy]=points[0].split(',');out+=el('circle',{cx,cy,r:2.2,fill:color});}points=[];};values.forEach((v,k)=>{if(v===null){flush();return;}points.push(x(k).toFixed(2)+','+y(v).toFixed(2));});flush();}
+ line(prob,yp,'#267fc6');line(temps,yt,'#dc7042');
+ out+=el('text',{x:left,y:10,fill:'#b35d3b','font-size':11,'font-weight':700},'℃');
+ out+=el('text',{x:W-right,y:10,'text-anchor':'end',fill:'#2679b7','font-size':11,'font-weight':700},'%');
+ root.innerHTML=el('svg',{viewBox:'0 0 '+W+' '+H,xmlns:'http://www.w3.org/2000/svg',role:'img','aria-label':'48時間の気温（オレンジ・左軸）と降水確率（青・右軸）の折れ線グラフ'},out);
+ $('hourChartHint').textContent='オレンジ＝気温（左軸・℃）／青＝降水確率（右軸・%）。下の詳細予報は左右にスクロールできます。';
 }
-document.querySelectorAll('[data-weather-chart]').forEach(button=>button.addEventListener('click',()=>{
- weatherChartMode=button.dataset.weatherChart;
- document.querySelectorAll('[data-weather-chart]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
- drawWeatherChart();
-}));
 
 let gpsSeq=0;
 function gpsRequest(options){
