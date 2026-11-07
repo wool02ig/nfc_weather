@@ -395,7 +395,7 @@ function renderNewExtras(core){
    heatText='気温 '+fmt(heatTemp)+'℃ / 湿度 '+fmt(humid)+'% / 体感 '+fmt(feel)+'℃。簡易目安であり、熱中症・公式WBGT判定ではありません。';
   }
   $('heatLevel').textContent=heat.includes('高温に注意')?'🔴 高温注意':heat.includes('暑さに注意')?'🟡 注意':heat.includes('低め')?'🟢 低め':'⚪ 不明';if(Number.isFinite(heatTemp))setQuickDetail('heatDetail',['気温 '+fmt(heatTemp)+'℃','湿度 '+fmt(humid)+'%']);else $('heatDetail').textContent='データ不足';
-  $('goAdvice').textContent=(wind>=36||gust>=54?'💨 強い風に注意。':heatTemp>=30?'🥵 暑さ対策を。':feel<12?'🧥 防寒用の上着があると安心。':'気温・風を確認してお出かけを。')+' 雨の判断は下の時間別予報も確認してください。';
+  $('goAdvice').textContent=(wind>=36||gust>=54?'強い風に注意。':heatTemp>=30?'暑さ対策を。':feel<12?'防寒用の上着があると安心。':'気温・風を確認してお出かけを。')+' 雨の判断は下の時間別予報も確認してください。';
   const h=d.hourly||{},target=$('timeline');target.replaceChildren();const localNow=new Date(Date.now()+(d.utc_offset_seconds||0)*1000).toISOString().slice(0,13)+':00';let i=(h.time||[]).findIndex(x=>x>=localNow);if(i<0)i=0;
   for(let j=i;j<Math.min(i+48,h.time?.length||0);j++){
     const row=document.createElement('div');row.className='timeitem';
