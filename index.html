@@ -437,7 +437,13 @@ function drawWeatherChart(data,start){
  for(let k=0;k<n;k++){
   const t=h.time[weatherChartStart+k],hour=Number(t.slice(11,13));
   if(k>0&&hour===0)out+=el('line',{x1:x(k),y1:top,x2:x(k),y2:top+ph,stroke:'#a6bed8','stroke-dasharray':'3 4'});
-  if(k===0||hour%6===0){const label=(k===0?t.slice(5,10).replace('-','/')+' ':'')+String(hour).padStart(2,'0')+'時';out+=el('text',{x:x(k),y:H-17,'text-anchor':k===0?'start':'middle',fill:'#637a92','font-size':11},label);}
+  // Keep labels six data points apart even when the forecast begins near midnight.
+  // A separate date label at the first tick avoids the long first label colliding with the next one.
+  if(k%6===0){
+   const label=String(hour).padStart(2,'0')+'時';
+   out+=el('text',{x:x(k),y:H-17,'text-anchor':k===0?'start':'middle',fill:'#637a92','font-size':11},label);
+   if(k===0)out+=el('text',{x:x(k),y:H-3,'text-anchor':'start',fill:'#8290a0','font-size':10},t.slice(5,10).replace('-','/'));
+  }
  }
  function line(values,y,color){let points=[];const flush=()=>{if(points.length>1)out+=el('polyline',{points:points.join(' '),fill:'none',stroke:color,'stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});else if(points.length===1){const [cx,cy]=points[0].split(',');out+=el('circle',{cx,cy,r:2.2,fill:color});}points=[];};values.forEach((v,k)=>{if(v===null){flush();return;}points.push(x(k).toFixed(2)+','+y(v).toFixed(2));});flush();}
  // Probability bars share the right-hand percentage axis; temperature remains a line.
