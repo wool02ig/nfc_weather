@@ -207,6 +207,20 @@
 /* Remove the leftover top gap after the warning-status line was removed. */
 .radar-links{margin-top:0}
 @media(min-width:520px){.radar-links{margin-top:0}}
+
+/* v3.4: responsive chart height (no leftover mobile blank area) */
+.hour-chart{min-height:0}
+.hour-chart svg{display:block;width:100%;height:auto}
+/* Center the entire quick-outing section, including guidance and data tiles. */
+.outing-card{text-align:center}
+.outing-card .extraGrid .tile{text-align:center;min-width:0}
+.outing-card #windNow{white-space:nowrap}
+/* Mobile: uniform forecast links without unintended line wrapping. */
+@media(max-width:519px){
+  .externalgrid{grid-template-columns:minmax(0,1fr);gap:7px}
+  .externalgrid a{display:flex;align-items:center;justify-content:center;min-height:36px;padding:8px 10px;white-space:nowrap;font-size:12px}
+  .outing-card #windNow{font-size:clamp(18px,5vw,23px)}
+}
 </style></head>
 <body><main><header class="top"><div class="eyebrow">NFC WEATHER DASHBOARD</div><h1>お出かけ天気チェック</h1><div class="hero-layout"><div class="current"><div class="emoji" id="nowIcon">🌤️</div><div><div class="temperature-line"><div class="temp" id="nowTemp">--°</div><button id="refresh" class="refresh-icon" type="button" title="天気を更新" aria-label="天気を更新">↻</button></div><div class="weather-place-line"><div class="condition" id="nowCond">天気情報を取得中</div><div class="location" id="where">📍 つくば</div></div><div id="refreshFeedback" class="refresh-feedback" role="status" aria-live="polite"></div></div></div><div class="controls"><button id="gps">📍 現在地で更新</button><select id="city" aria-label="地域を選ぶ"><option value="">地域を選択</option><option value="43.0618,141.3545,札幌">札幌</option><option value="38.2682,140.8694,仙台">仙台</option><option value="36.3966,138.4255,小諸">小諸</option><option value="36.3659,140.4713,水戸">水戸</option><option value="36.0835,140.0764,つくば" selected>つくば</option><option value="35.8617,139.6455,さいたま">さいたま</option><option value="35.6074,140.1065,千葉">千葉</option><option value="35.6812,139.7671,東京">東京</option><option value="35.6547,139.7959,豊洲">豊洲</option><option value="35.4437,139.6380,横浜">横浜</option><option value="36.5613,136.6562,金沢">金沢</option><option value="35.1815,136.9066,名古屋">名古屋</option><option value="35.0116,135.7681,京都">京都</option><option value="34.6937,135.5023,大阪">大阪</option><option value="34.6901,135.1955,神戸">神戸</option><option value="34.3853,132.4553,広島">広島</option><option value="33.5902,130.4017,福岡">福岡</option><option value="26.2124,127.6809,那覇">那覇</option></select><select id="model" aria-label="天気予報モデル"><option value="best_match">自動選択</option><option value="jma_seamless">気象庁（日本）</option><option value="ecmwf_ifs025">欧州（ECMWF）</option><option value="ncep_gfs_seamless">米国（GFS）</option></select></div></div></header>
 <div class="section">☀️ 今日・明日の天気</div>
@@ -216,9 +230,9 @@
     <div class="day-compare-panel"><div class="day-compare-heading">明日</div><div class="day-compare-icon" id="tomIcon">🌤️</div><div class="day-compare-condition" id="tomCond">--</div><div class="day-compare-temp" id="tomTemps">--° / --°</div><div class="day-compare-temp-label">最高 / 最低</div><div class="day-compare-rain">☂ 降水確率 <strong id="tomRain">--%</strong></div><div class="day-compare-umbrella" id="tomUmbrella">傘の目安を確認中</div></div>
   </div>
 </section>
-<div class="section">🕒 この先48時間の天気</div><section class="card"><div class="hour-chart-toolbar"><span class="hour-chart-title">📈 気温と降水確率の推移</span><div class="hour-chart-legend"><span class="legend-temp">気温（℃）</span><span class="legend-rain">降水確率（%）</span></div></div><div id="hourChart" class="hour-chart" role="img" aria-label="この先48時間の気温と降水確率の推移">グラフを取得中…</div><div class="hour-chart-divider"></div><div class="hour-detail-title">時間別の詳細予報 </div><div class="timeline" id="timeline"><div class="small">時間別予報を取得しています…</div></div></section>
+<div class="section">🕒 この先48時間の天気</div><section class="card"><div class="hour-chart-toolbar"><span class="hour-chart-title">気温と降水確率の推移</span><div class="hour-chart-legend"><span class="legend-temp">気温（℃）</span><span class="legend-rain">降水確率（%）</span></div></div><div id="hourChart" class="hour-chart" role="img" aria-label="この先48時間の気温と降水確率の推移">グラフを取得中…</div><div class="hour-chart-divider"></div><div class="hour-detail-title">時間別の詳細予報 </div><div class="timeline" id="timeline"><div class="small">時間別予報を取得しています…</div></div></section>
 <div class="section">🌧️ 雨の降り始め目安</div><section class="card"><div class="metric" id="rainStart" style="font-size:20px">取得中…</div><div class="small" id="rainStartDetail">時間別予報から推定します。雨雲レーダーではありません。</div></section>
-<div class="section">🚶 お出かけ直前チェック</div><section class="card"><div class="notice" id="goAdvice">外出情報を取得しています…</div><div class="extraGrid" style="margin-top:12px"><div class="tile"><div class="small">🌡️ 体感温度</div><div class="metric" id="feelsLike">--°</div><div class="small" id="clothes">服装アドバイス取得中</div></div><div class="tile"><div class="small">💨 現在の風速・突風</div><div class="metric" id="windNow">--</div><div class="small" id="windNote">強風の目安を取得中</div></div><div class="tile"><div class="small">☀️ 本日のUV最大</div><div class="metric" id="uvIndex">--</div><div class="small" id="uvNote">紫外線指数</div></div><div class="tile"><div class="small">🌇 日の出 / 日の入り</div><div class="metric" id="sunTimes">-- / --</div><div class="small">選択地点の現地時刻</div></div></div></section>
+<div class="section">🚶 お出かけ直前チェック</div><section class="card outing-card"><div class="notice" id="goAdvice">外出情報を取得しています…</div><div class="extraGrid" style="margin-top:12px"><div class="tile"><div class="small">🌡️ 体感温度</div><div class="metric" id="feelsLike">--°</div><div class="small" id="clothes">服装アドバイス取得中</div></div><div class="tile"><div class="small">💨 風速</div><div class="metric" id="windNow">--</div><div class="small" id="windNote">強風の目安を取得中</div></div><div class="tile"><div class="small">☀️ 本日のUV最大</div><div class="metric" id="uvIndex">--</div><div class="small" id="uvNote">紫外線指数</div></div><div class="tile"><div class="small">🌇 日の出 / 日の入り</div><div class="metric" id="sunTimes">-- / --</div><div class="small">選択地点の現地時刻</div></div></div></section>
 
 <div class="section">🧺 お出かけ生活チェック</div>
 <section class="card"><div class="quick-grid">
@@ -369,7 +383,7 @@ function renderNewExtras(core){
   if(mySeq!==extraSeq)return;
   const c=d.current||{},day=d.daily||{},feel=c.apparent_temperature,wind=c.wind_speed_10m,gust=c.wind_gusts_10m,uv=day.uv_index_max?.[0];
   $('feelsLike').textContent=fmt(feel)+'°';$('clothes').textContent=clothesAdvice(feel)+'（体感温度目安）';
-  $('windNow').textContent=fmt(wind)+' km/h';$('windNote').textContent='突風 '+fmt(gust)+' km/h'+(wind>=36||gust>=54?' ⚠ 強い風に注意':wind>=20?' やや風が強い':'');
+  $('windNow').textContent=fmt(wind==null?null:wind/3.6)+' m/s';$('windNote').textContent='突風 '+fmt(gust==null?null:gust/3.6)+' m/s'+(wind>=36||gust>=54?' ⚠ 強風注意':wind>=20?' やや強め':'');
   $('uvIndex').textContent=fmt(uv);$('uvNote').textContent=uv==null?'取得不可':uv>=8?'非常に強い：日陰・帽子推奨':uv>=6?'強い：日焼け対策':uv>=3?'中程度：日焼け対策':'低い';
   $('sunTimes').textContent=[day.sunrise?.[0],day.sunset?.[0]].map(t=>t?t.slice(11,16):'--').join(' / ');
   const heatTemp=c.temperature_2m,humid=c.relative_humidity_2m;
@@ -381,7 +395,7 @@ function renderNewExtras(core){
    heatText='気温 '+fmt(heatTemp)+'℃ / 湿度 '+fmt(humid)+'% / 体感 '+fmt(feel)+'℃。簡易目安であり、熱中症・公式WBGT判定ではありません。';
   }
   $('heatLevel').textContent=heat.includes('高温に注意')?'🔴 高温注意':heat.includes('暑さに注意')?'🟡 注意':heat.includes('低め')?'🟢 低め':'⚪ 不明';if(Number.isFinite(heatTemp))setQuickDetail('heatDetail',['気温 '+fmt(heatTemp)+'℃','湿度 '+fmt(humid)+'%']);else $('heatDetail').textContent='データ不足';
-  $('goAdvice').textContent=(wind>=36||gust>=54?'💨 強い風に注意。':heatTemp>=30?'🥵 暑さ対策を。':feel<12?'🧥 防寒用の上着があると安心。':'🚶 気温・風を確認してお出かけを。')+' 雨の判断は下の時間別予報も確認してください。';
+  $('goAdvice').textContent=(wind>=36||gust>=54?'💨 強い風に注意。':heatTemp>=30?'🥵 暑さ対策を。':feel<12?'🧥 防寒用の上着があると安心。':'気温・風を確認してお出かけを。')+' 雨の判断は下の時間別予報も確認してください。';
   const h=d.hourly||{},target=$('timeline');target.replaceChildren();const localNow=new Date(Date.now()+(d.utc_offset_seconds||0)*1000).toISOString().slice(0,13)+':00';let i=(h.time||[]).findIndex(x=>x>=localNow);if(i<0)i=0;
   for(let j=i;j<Math.min(i+48,h.time?.length||0);j++){
     const row=document.createElement('div');row.className='timeitem';
@@ -430,7 +444,11 @@ function drawWeatherChart(data,start){
  if(!validT.length&&!prob.some(v=>v!==null)){root.textContent='気温・降水確率データがありません';return;}
  const lo=validT.length?Math.floor(Math.min(...validT)-2):0,hi=validT.length?Math.ceil(Math.max(...validT)+2):30;
  const tMin=lo,tMax=Math.max(lo+4,hi);
- const W=640,H=212,left=39,right=39,top=17,bottom=41,pw=W-left-right,ph=H-top-bottom;
+ // Use the actual rendered card width on mobile. This prevents a fixed 160px
+ // container holding a much shorter scaled-down SVG and leaving a blank strip.
+ const compact=root.clientWidth<520;
+ const W=compact?Math.max(260,Math.round(root.clientWidth)):640;
+ const H=compact?195:212,left=compact?32:39,right=compact?32:39,top=17,bottom=compact?34:41,pw=W-left-right,ph=H-top-bottom;
  const x=k=>left+(n<=1?0:k/(n-1)*pw),yt=v=>top+(tMax-v)/(tMax-tMin)*ph,yp=v=>top+(100-v)/100*ph;
  const el=(tag,attrs,content='')=>'<'+tag+' '+Object.entries(attrs).map(([k,v])=>k+'="'+String(v)+'"').join(' ')+'>'+content+'</'+tag+'>';
  let out='';
@@ -445,7 +463,7 @@ function drawWeatherChart(data,start){
   if(k>0&&hour===0)out+=el('line',{x1:x(k),y1:top,x2:x(k),y2:top+ph,stroke:'#a6bed8','stroke-dasharray':'3 4'});
   // Keep labels six data points apart even when the forecast begins near midnight.
   // A separate date label at the first tick avoids the long first label colliding with the next one.
-  if(k%6===0){
+  if(k%(compact?8:6)===0){
    const label=String(hour).padStart(2,'0')+'時';
    out+=el('text',{x:x(k),y:H-17,'text-anchor':k===0?'start':'middle',fill:'#637a92','font-size':11},label);
    if(k===0)out+=el('text',{x:x(k),y:H-3,'text-anchor':'start',fill:'#8290a0','font-size':10},t.slice(5,10).replace('-','/'));
@@ -462,6 +480,7 @@ function drawWeatherChart(data,start){
 
 }
 
+let chartResizeTimer;window.addEventListener('resize',()=>{clearTimeout(chartResizeTimer);chartResizeTimer=setTimeout(()=>{if(weatherChartData)drawWeatherChart();},120);});
 let gpsSeq=0;
 function gpsRequest(options){
  return new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,options));
